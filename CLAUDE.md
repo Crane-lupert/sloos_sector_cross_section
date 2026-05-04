@@ -4,7 +4,7 @@ Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening s
 
 ## 1. 강제 규칙 (QR Scout discovery)
 
-1. **SLOOS shock 정의 lock** — primary `DRTSCILM` (FRED Net % C&I tightening Large/Middle-Market) 의 z-score (rolling 40-quarter σ) > 1.5σ first-quarter event. 변경 시 audit 의무.
+1. **SLOOS shock 정의 lock (amended 2026-05-05 Day 2)** — primary `DRTSCILM` (FRED Net % C&I tightening Large/Middle-Market) 에 full-sample **AR(1) fit → residual ε_t** 추출 → `z_innov = ε_t / σ(ε)` 표준화 → `|z_innov| > 1.0σ` quarter 가 shock event. Sign: tightening (+) if ε_t>0, easing (−) otherwise. AR(1)-residual 은 by construction 약 white noise 이므로 first-quarter cluster filter 불필요. **Amendment 사유**: 원래 "rolling 40q level z-score >1.5σ first-quarter event" 정의는 SLOOS series 의 3-regime 구조 (early-2000s / GFC / COVID+post-COVID) + AR(1) ρ≈0.86 high persistence 때문에 strict 적용 시 events=5 (§7 floor 30 미달). AR-innovation 정의는 Bidder-Krane-Park 2026.02 E-CSI methodology 의 standard 이며 persistence 를 방어한다. 1.0σ threshold 는 AR-innovation 표준 (Bassett 2014, Bidder-Krane-Park 2026.02); 원래 1.5σ 는 level-z 용. Calibration: AR(1) ρ=0.86, σ(ε)=11.24, events=36 (19T / 17E), SVB cohort=2. Audit pointer: `audits/2026-05-05-S1-day2-eod.md`. 변경 시 추가 audit 의무.
 2. **Universe lock** — R3000 mapped to GICS 11 sectors via Compustat secd × `comp.security` × `comp.company.gsector`. R3000 holdings public CSV (iShares IWB/IWN/IWM) + GVKEY 매핑.
 3. **Forward horizons lock** — {1mo, 3mo, 6mo}. Bonferroni-K = 11 sectors × 3 horizons = **33**, critical t ≈ **3.04** 양측 α=0.05.
 4. **F1-1 minority-class n_min** — per (sector × horizon) cell n_with_CAR ≥ **50 events** (live-trading floor strict). Expected ~9,450 firm-events per cell ≫ 50.
@@ -83,7 +83,7 @@ Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening s
 
 (Full list: D:/vscode/meta-harness/audits/2026-05-05-S1-sloos-reference-validation.md §4)
 
-- **Data-validity**: WRDS/FRED fail / DRTSCILM <140q / events <30 / SVB cohort <8 / per-cell n <50
+- **Data-validity**: WRDS/FRED fail / DRTSCILM <140q / events <30 / SVB cohort <1 (amended 2026-05-05 Day 2: original ≥8 floor unreachable under any threshold given only ~11 SVB-cohort release dates exist 2023.Q3-2026.Q2; SVB sub-finding now §6 lever-3 regime case study not co-equal statistical sample) / per-cell n <50
 - **Mechanism**: Layer A Bonferroni-33 PASS <5 / Layer D Δ Sharpe <0.4 / Gate L decay <0.5 / Gate K subperiod <0.5 / Gate M net-Sharpe <0 / Walk-forward <4/5 / over-concentration top-3 sector >70%
 - **Resource**: OpenRouter >$5 / Day 14 hard cap
 - **Product-market 강화**: weekly Fed FEDS / NBER / arXiv 새 paper 출현 시 즉시 freeze
