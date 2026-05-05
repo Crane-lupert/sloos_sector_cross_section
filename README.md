@@ -68,6 +68,19 @@ uv run pytest
 | Gate M net-of-cost | ≥ 0 | +1.02 | PASS |
 | Walk-forward fold range | — | +0.41 to +2.77 net Sharpe | all 5 positive |
 
+### Phase 3 honest revision (2026-05-05): CRSP survivor-bias correction
+| Variant | Raw Sharpe | Alpha-Sharpe (5-comp absorbed) | p-value |
+|---|---|---|---|
+| Compustat unsigned 6m | +1.027 | +1.112 | 0.080 |
+| **CRSP unsigned 6m (survivor-bias-corrected)** | **+1.552** | **+3.357** | **<0.001** |
+| CRSP sign-conditional 6m | +1.590 | +3.244 | <0.001 |
+
+Counterintuitive finding: survivor bias correction **strengthens** the headline. Compustat under-counts the SHORT basket (Healthcare/IT) because delisted firms' losses are absent. CRSP captures them → L/S 6m alpha-Sharpe triples.
+
+1m horizon DOES show survivor-bias inflation: alpha-Sharpe drops +2.48 → +0.71 (p=0.22 marginal). Original 1m result was overstated.
+
+CCM link via CUSIP8 (95.4% R3000 coverage) — real `ccmxpf_lnkhist` USAGE-blocked in WRDS subscription. Time-varying linkage is a known limitation. See `audits/2026-05-05-S1-phase3-honest-revision.md`.
+
 Lock amendments (audit trail):
 - Phase 0 §1.1 SLOOS shock: amended Day 2 to AR(1) residual `|z_innov|>1.0σ` (was `level z>1.5σ rolling 40q first-quarter`). Reason: original gave 5 events << 30 floor due to AR(1) ρ=0.86 high persistence.
 - §7 SVB cohort floor: amended Day 2 to ≥1 (regime case study, not co-equal sample). Reason: only ~11 SVB releases exist.

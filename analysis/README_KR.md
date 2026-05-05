@@ -88,6 +88,33 @@ Sign-conditional 이 +87% alpha-Sharpe 개선. p<0.005 로 강한 유의. Operat
 - TIGHTEN events: long [Materials, Industrials, Cons Disc, Cons Staples, Utilities], short [Healthcare]
 - EASE events: long [Energy, Industrials, Cons Staples, Financials], short [Healthcare]
 
+## Phase 3 honest revision (2026-05-05) — survivor-bias corrected
+
+WRDS courier 의 `ccmxpf_lnkhist` USAGE-blocked → CUSIP8 95.4% 매핑으로 우회.
+CRSP `dsf` (delisting return native) 로 universe 재구축. 결과 — **6m headline 더 강해짐**:
+
+| Variant | Raw Sharpe | Alpha-Sharpe | p-value |
+|---|---|---|---|
+| Compustat unsigned 6m | +1.027 | +1.112 | 0.080 |
+| Compustat sign-conditional 6m | +1.250 | +2.078 | 0.002 |
+| **CRSP unsigned 6m** | **+1.552** | **+3.357** | **<0.001** |
+| CRSP sign-conditional 6m | +1.590 | +3.244 | <0.001 |
+
+이유: Compustat-survivor-biased universe 가 **SHORT basket 의 기여를 under-count** (defensive sector 의 delisted firm 들의 큰 손실 missing). CRSP 추가 시 L/S strategy 가 그 손실 capture → 6m alpha 3배 강화.
+
+1m 결과는 반대로 -71% 약화 (+2.48 → +0.71, p=0.22): 1m 의 조기 bounce 가 survivor bias 로 inflated 됐던 것.
+
+**Layer A 6m t-stat 변화** (CRSP):
+- Healthcare: -11.94 → -17.69 (더 음)
+- IT: -4.08 → -10.12 (더 음)
+- Energy: +2.15 → +13.40 (훨씬 강한 양)
+- Materials: +3.90 → -1.41 (sign flip, both insig)
+- Real Estate: -1.03 → +6.34 (sign flip, 새로 유의)
+
+Walk-forward 5/5 PASS (CRSP), per-fold net Sharpe +0.76 ~ +7.48.
+
+Audit: `audits/2026-05-05-S1-phase3-honest-revision.md`.
+
 ## 한계 및 follow-up
 
 1. Survivor bias: 2026 현재 listed 종목 backfill. 실거래 Sharpe 는 더 낮음.

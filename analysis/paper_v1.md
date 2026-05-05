@@ -182,7 +182,17 @@ The sign-conditional variant is materially stronger because it exploits the asym
 
 ## 11. Limitations and follow-up
 
-1. **Survivor bias in universe**: panel uses currently-listed firms back-extrapolated to 1990. Failed/delisted firms absent. Live-trading realized Sharpe would be lower; magnitude bounded by the cross-fold stability of long-basket composition.
+1. ~~**Survivor bias in universe**: panel uses currently-listed firms back-extrapolated to 1990. Failed/delisted firms absent. Live-trading realized Sharpe would be lower.~~ **Updated 2026-05-05 Phase 3 honest revision**: rebuilt the panel using CRSP `dsf` (delisting returns native, no survivor bias) via CUSIP8-based CCM link (95.4% coverage of R3000 universe, 2,765 permno-gvkey pairs). Result is **stronger, not weaker**, at the 6m headline horizon:
+   - Layer A 6m: 18/33 cells significant (Compustat) → **22/33 cells** (CRSP). Healthcare 6m t-stat: -11.94 → **-17.69**; IT 6m: -4.08 → -10.12; Energy 6m: +2.15 → +13.40.
+   - Layer D 6m alpha-Sharpe: +1.112 (p=0.080) → **+3.357 (p<0.001)** (3× stronger).
+   - Sign-conditional 6m: +2.078 (p=0.002) → +3.244 (p<0.001).
+   - Walk-forward 5/5 holds; per-fold net Sharpe range +0.76 to +7.48 on CRSP.
+
+   Mechanism: Compustat-survivor-biased universe **under-counts the SHORT basket's contribution** — delisted firms (which had the worst losses in defensive sectors during easing shocks) are missing. Once CRSP includes them, the L/S strategy captures their losses and the headline strengthens.
+
+   The 1m horizon DOES exhibit the suspected survivor-bias inflation: alpha-Sharpe drops from +2.478 (Compustat) to +0.709 (CRSP, p=0.224 marginal). The original 1m result was overstated.
+
+   Audit: `audits/2026-05-05-S1-phase3-honest-revision.md`.
 
 2. ~~**Healthcare 6m -523bp t=-11.94 is extreme**: future work should confirm this isn't driven by 1-2 outlier firms (winsorization check).~~ **Resolved 2026-05-05**: winsorizing at 0.1%, 0.5%, 1%, 5% levels produces means of -537, -604, -631, -620bp respectively — winsorization makes the finding *more* extreme, not less. Top 30 most-extreme negative CARs use 24 unique gvkeys (no firm dominates). The pattern is concentrated on **EASE** shock events (2021-Q3, 2020-Q4, 2021-Q1, 2009-Q2 are the 4 most-negative Healthcare-6m events; all are easing shocks). Consistent with sign-asymmetry table §9 (Healthcare ease t=-10.88 vs tighten t=-6.19). Audit: `audits/2026-05-05-S1-healthcare-outlier-followup.md`.
 
@@ -193,6 +203,12 @@ The sign-conditional variant is materially stronger because it exploits the asym
 5. **Lookahead at 2× horizon decays substantially**: this is signal aging not a bias, but the 12m hold variant of the strategy would not be tradable.
 
 6. **SVB cohort is a 2-event regime case study, not a co-equal statistical sample**: future SLOOS shock arrivals would help confirm or break the sub-finding.
+
+7. **Time-varying CCM linkage missing**: Phase 3 honest revision uses CUSIP8-based static CRSP↔Compustat link (the proper `comp.ccmxpf_lnkhist` is USAGE-blocked in our WRDS subscription as of 2026-05-05; ETA pending). CUSIP8 join gives 95.4% coverage of our R3000 universe with zero ambiguity, but does not preserve historical CUSIP changes / spinoffs / mergers. When real ccmxpf_lnkhist is unblocked, the analysis should be re-run with proper time-varying linkage. Coverage on 4.6% of universe firms (mostly recent IPOs, ADRs, CUSIP-change cases) is missing entirely from the CRSP panel.
+
+8. **CRSP cutoff at 2024-12-31** loses the 2025-04-01 SLOOS event from CRSP analysis (35 of 36 events). The Compustat panel covers 2025-04-01; cross-validation between panels is consistent.
+
+9. **IVOL still macro proxy, not firm-level Ang et al 2006 standard**: current IVOL is realized std of `Mkt-RF` over 60td preceding event. Proper firm-level rolling 60d FF5-residual std per firm-day would require ~23M small regressions; left to future iteration if absorption sensitivity becomes binding.
 
 ## 12. Reproducibility
 
