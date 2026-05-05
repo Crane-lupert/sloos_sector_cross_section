@@ -163,7 +163,7 @@ Sign-asymmetry is exploitable in sub-portfolio construction; we leave optimal si
 
 1. **Survivor bias in universe**: panel uses currently-listed firms back-extrapolated to 1990. Failed/delisted firms absent. Live-trading realized Sharpe would be lower; magnitude bounded by the cross-fold stability of long-basket composition.
 
-2. **Healthcare 6m -523bp t=-11.94 is extreme**: future work should confirm this isn't driven by 1-2 outlier firms (winsorization check).
+2. ~~**Healthcare 6m -523bp t=-11.94 is extreme**: future work should confirm this isn't driven by 1-2 outlier firms (winsorization check).~~ **Resolved 2026-05-05**: winsorizing at 0.1%, 0.5%, 1%, 5% levels produces means of -537, -604, -631, -620bp respectively — winsorization makes the finding *more* extreme, not less. Top 30 most-extreme negative CARs use 24 unique gvkeys (no firm dominates). The pattern is concentrated on **EASE** shock events (2021-Q3, 2020-Q4, 2021-Q1, 2009-Q2 are the 4 most-negative Healthcare-6m events; all are easing shocks). Consistent with sign-asymmetry table §9 (Healthcare ease t=-10.88 vs tighten t=-6.19). Audit: `audits/2026-05-05-S1-healthcare-outlier-followup.md`.
 
 3. **In-sample Layer A → Layer D**: same data picks L/S sectors AND tests absorption. Walk-forward Phase 1 §1.9 mitigates but adds variance. n=36 events × 9 baseline features is a thin regression.
 
