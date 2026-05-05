@@ -88,32 +88,34 @@ Sign-conditional 이 +87% alpha-Sharpe 개선. p<0.005 로 강한 유의. Operat
 - TIGHTEN events: long [Materials, Industrials, Cons Disc, Cons Staples, Utilities], short [Healthcare]
 - EASE events: long [Energy, Industrials, Cons Staples, Financials], short [Healthcare]
 
-## Phase 3 honest revision (2026-05-05) — survivor-bias corrected
+## Phase 3 honest revision (2026-05-05) — bias 보정 단계별 진실 추적
 
-WRDS courier 의 `ccmxpf_lnkhist` USAGE-blocked → CUSIP8 95.4% 매핑으로 우회.
-CRSP `dsf` (delisting return native) 로 universe 재구축. 결과 — **6m headline 더 강해짐**:
+WRDS `ccmxpf_lnkhist` USAGE-blocked → CUSIP8 95.4% 매핑 우회 (Phase 3 v1) → time-varying via `dsenames.ncusip` 워크어라운드 (Phase 3 v2 honest).
 
-| Variant | Raw Sharpe | Alpha-Sharpe | p-value |
-|---|---|---|---|
-| Compustat unsigned 6m | +1.027 | +1.112 | 0.080 |
-| Compustat sign-conditional 6m | +1.250 | +2.078 | 0.002 |
-| **CRSP unsigned 6m** | **+1.552** | **+3.357** | **<0.001** |
-| CRSP sign-conditional 6m | +1.590 | +3.244 | <0.001 |
+| Version | Survivor bias | Lookahead-univ | 6m alpha-Sharpe | p-value |
+|---|---|---|---|---|
+| Original (Compustat sec_dprc) | 있음 | 있음 | +1.112 | 0.080 |
+| Phase 3 v1 (CRSP + static CUSIP8) | 수정 | 있음 | +3.357 | <0.001 |
+| **Phase 3 v2 (CRSP + time-varying)** | **수정** | **수정** | **+0.866** | **0.182** |
 
-이유: Compustat-survivor-biased universe 가 **SHORT basket 의 기여를 under-count** (defensive sector 의 delisted firm 들의 큰 손실 missing). CRSP 추가 시 L/S strategy 가 그 손실 capture → 6m alpha 3배 강화.
+Phase 3 v1 의 +3.357 strengthening 은 **lookahead bias 였음**. 현재 2026 iShares R3000 firms 를 1990 까지 backfill 하면 75% 가 그 시점에 미존재 → spurious signal.
 
-1m 결과는 반대로 -71% 약화 (+2.48 → +0.71, p=0.22): 1m 의 조기 bounce 가 survivor bias 로 inflated 됐던 것.
+Time-varying link 적용 시:
+- 1m alpha-Sharpe **+0.193 (p=0.74) FAIL**
+- 3m alpha-Sharpe **-0.035 (p=0.96) FAIL**
+- 6m alpha-Sharpe **+0.866 (p=0.18) marginal PASS** (sec.0.40 floor 통과 but p>0.05)
+- Walk-forward **4/5** (fold 1 -0.91 fail; n=6 train 너무 thin)
 
-**Layer A 6m t-stat 변화** (CRSP):
-- Healthcare: -11.94 → -17.69 (더 음)
-- IT: -4.08 → -10.12 (더 음)
-- Energy: +2.15 → +13.40 (훨씬 강한 양)
-- Materials: +3.90 → -1.41 (sign flip, both insig)
-- Real Estate: -1.03 → +6.34 (sign flip, 새로 유의)
+→ 제 원래 honest-research 경고 (true OOS Sharpe ~0.3-0.9) confirm.
 
-Walk-forward 5/5 PASS (CRSP), per-fold net Sharpe +0.76 ~ +7.48.
+Layer A (sector cross-section heterogeneity) 는 모든 bias 보정 후에도 **15/33 cells significant** → real economic phenomenon. L/S trading strategy alpha (Layer D) 만 thin sample 한계로 marginal.
 
-Audit: `audits/2026-05-05-S1-phase3-honest-revision.md`.
+**Strict 판정**: LAYER A LOCKED 3-of-3 (모든 floor 통과)
+**Honest 판정**: borderline LAYER A LOCKED / frozen-two-layer
+
+Audits: `audits/2026-05-05-S1-phase3-honest-revision.md` (v1) + `audits/2026-05-05-S1-phase3-v2-time-varying-honest.md` (v2).
+
+⚠️ **CLAUDE.md §5 STOP**: meta-harness governance review 후 push 결정.
 
 ## 한계 및 follow-up
 

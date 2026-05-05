@@ -182,17 +182,27 @@ The sign-conditional variant is materially stronger because it exploits the asym
 
 ## 11. Limitations and follow-up
 
-1. ~~**Survivor bias in universe**: panel uses currently-listed firms back-extrapolated to 1990. Failed/delisted firms absent. Live-trading realized Sharpe would be lower.~~ **Updated 2026-05-05 Phase 3 honest revision**: rebuilt the panel using CRSP `dsf` (delisting returns native, no survivor bias) via CUSIP8-based CCM link (95.4% coverage of R3000 universe, 2,765 permno-gvkey pairs). Result is **stronger, not weaker**, at the 6m headline horizon:
-   - Layer A 6m: 18/33 cells significant (Compustat) → **22/33 cells** (CRSP). Healthcare 6m t-stat: -11.94 → **-17.69**; IT 6m: -4.08 → -10.12; Energy 6m: +2.15 → +13.40.
-   - Layer D 6m alpha-Sharpe: +1.112 (p=0.080) → **+3.357 (p<0.001)** (3× stronger).
-   - Sign-conditional 6m: +2.078 (p=0.002) → +3.244 (p<0.001).
-   - Walk-forward 5/5 holds; per-fold net Sharpe range +0.76 to +7.48 on CRSP.
+1. ~~**Survivor bias in universe**: panel uses currently-listed firms back-extrapolated to 1990. Failed/delisted firms absent. Live-trading realized Sharpe would be lower.~~ **Phase 3 v1 (2026-05-05)**: rebuilt with CRSP `dsf` (delisting native) via static CUSIP8 join (95.4% coverage). 6m alpha-Sharpe **+3.357 (p<0.001)** — appeared to strengthen the result.
 
-   Mechanism: Compustat-survivor-biased universe **under-counts the SHORT basket's contribution** — delisted firms (which had the worst losses in defensive sectors during easing shocks) are missing. Once CRSP includes them, the L/S strategy captures their losses and the headline strengthens.
+   ⚠️ **Phase 3 v2 (2026-05-05, the truly honest version)**: the +3.357 was inflated by **lookahead bias on the universe** — static CUSIP8 backfilled current 2026 R3000 firms to 1990 events when ~75% of them did not yet exist as public companies. After applying time-varying CCM link via `dsenames.ncusip` + `comp.names` (per-event active membership), the result regresses to:
 
-   The 1m horizon DOES exhibit the suspected survivor-bias inflation: alpha-Sharpe drops from +2.478 (Compustat) to +0.709 (CRSP, p=0.224 marginal). The original 1m result was overstated.
+   | Version | Survivor bias | Lookahead bias | 6m alpha-Sharpe | p-value |
+   |---|---|---|---|---|
+   | Original (Compustat) | YES | YES | +1.112 | 0.080 |
+   | Phase 3 v1 (CRSP+static CUSIP8) | NO | YES | +3.357 | <0.001 |
+   | **Phase 3 v2 (CRSP+time-varying)** | **NO** | **NO** | **+0.866** | **0.182** |
 
-   Audit: `audits/2026-05-05-S1-phase3-honest-revision.md`.
+   - Layer A: 15/33 cells significant (down from 22/33 v1, but still 3× the §7 hard-kill floor of 5)
+   - Layer D 6m: alpha-Sharpe **+0.866** marginally above 0.40 floor, p=0.182 marginal
+   - Layer D 1m: alpha-Sharpe **+0.193** (p=0.74) FAIL absorption floor — original 1m strength was inflated
+   - Layer D 3m: alpha-Sharpe **-0.035** (p=0.96) FAIL absorption floor
+   - Walk-forward: 4/5 PASS (fold 1 net Sharpe -0.91 fails — early-data fold has only n=6 train)
+
+   This **confirms the original honest-research warning** of true OOS Sharpe in 0.3-0.9 range. The strategy passes Phase 1 §7 floors under strict reading but is **statistically marginal**.
+
+   Sector cross-section heterogeneity (Layer A) is robust to all bias corrections — 15 cells significant even under the strictest setup. The L/S trading strategy alpha (Layer D) is the marginal piece.
+
+   Audits: `audits/2026-05-05-S1-phase3-honest-revision.md` (v1) + `audits/2026-05-05-S1-phase3-v2-time-varying-honest.md` (v2).
 
 2. ~~**Healthcare 6m -523bp t=-11.94 is extreme**: future work should confirm this isn't driven by 1-2 outlier firms (winsorization check).~~ **Resolved 2026-05-05**: winsorizing at 0.1%, 0.5%, 1%, 5% levels produces means of -537, -604, -631, -620bp respectively — winsorization makes the finding *more* extreme, not less. Top 30 most-extreme negative CARs use 24 unique gvkeys (no firm dominates). The pattern is concentrated on **EASE** shock events (2021-Q3, 2020-Q4, 2021-Q1, 2009-Q2 are the 4 most-negative Healthcare-6m events; all are easing shocks). Consistent with sign-asymmetry table §9 (Healthcare ease t=-10.88 vs tighten t=-6.19). Audit: `audits/2026-05-05-S1-healthcare-outlier-followup.md`.
 

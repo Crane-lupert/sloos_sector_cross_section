@@ -68,18 +68,24 @@ uv run pytest
 | Gate M net-of-cost | ≥ 0 | +1.02 | PASS |
 | Walk-forward fold range | — | +0.41 to +2.77 net Sharpe | all 5 positive |
 
-### Phase 3 honest revision (2026-05-05): CRSP survivor-bias correction
-| Variant | Raw Sharpe | Alpha-Sharpe (5-comp absorbed) | p-value |
-|---|---|---|---|
-| Compustat unsigned 6m | +1.027 | +1.112 | 0.080 |
-| **CRSP unsigned 6m (survivor-bias-corrected)** | **+1.552** | **+3.357** | **<0.001** |
-| CRSP sign-conditional 6m | +1.590 | +3.244 | <0.001 |
+### Phase 3 honest revision (2026-05-05): full bias correction reveals marginal alpha
 
-Counterintuitive finding: survivor bias correction **strengthens** the headline. Compustat under-counts the SHORT basket (Healthcare/IT) because delisted firms' losses are absent. CRSP captures them → L/S 6m alpha-Sharpe triples.
+| Version | Survivor bias | Lookahead-univ bias | 6m alpha-Sharpe | p-value |
+|---|---|---|---|---|
+| Original (Compustat sec_dprc) | YES | YES | +1.112 | 0.080 |
+| Phase 3 v1 (CRSP + static CUSIP8) | NO | YES | +3.357 | <0.001 |
+| **Phase 3 v2 (CRSP + time-varying)** | **NO** | **NO** | **+0.866** | **0.182** |
 
-1m horizon DOES show survivor-bias inflation: alpha-Sharpe drops +2.48 → +0.71 (p=0.22 marginal). Original 1m result was overstated.
+Phase 3 v1 appeared to STRENGTHEN the result, but that was lookahead bias — backfilling 2026 R3000 firms to 1990 events when ~75% didn't yet exist as public companies. Phase 3 v2 uses time-varying CCM link via `dsenames.ncusip` + `comp.names` (workaround for USAGE-blocked `ccmxpf_lnkhist`).
 
-CCM link via CUSIP8 (95.4% R3000 coverage) — real `ccmxpf_lnkhist` USAGE-blocked in WRDS subscription. Time-varying linkage is a known limitation. See `audits/2026-05-05-S1-phase3-honest-revision.md`.
+Strict reading: all 3 floors still met (LAYER A LOCKED 3-of-3).
+Honest reading: **statistically marginal** (p=0.182) at 6m; 1m/3m horizons fail absorption.
+
+Layer A heterogeneity (15/33 cells significant under v2) is robust to all bias corrections — sector cross-section heterogeneity is a real economic phenomenon. L/S strategy alpha (Layer D) is the marginal piece due to thin n=35 events.
+
+Audits: `audits/2026-05-05-S1-phase3-honest-revision.md` (v1) + `audits/2026-05-05-S1-phase3-v2-time-varying-honest.md` (v2).
+
+⚠️ **STOP per CLAUDE.md §5**: meta-harness governance review pending before any external publication.
 
 Lock amendments (audit trail):
 - Phase 0 §1.1 SLOOS shock: amended Day 2 to AR(1) residual `|z_innov|>1.0σ` (was `level z>1.5σ rolling 40q first-quarter`). Reason: original gave 5 events << 30 floor due to AR(1) ρ=0.86 high persistence.
