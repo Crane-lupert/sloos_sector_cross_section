@@ -14,6 +14,19 @@ LIMITATION: static link only. CUSIP changes / spinoffs / mergers that
 cause permno↔gvkey reassignment are not tracked. Paper §11 limitation.
 When `ccmxpf_lnkhist` is unblocked, swap to time-varying link and
 re-validate.
+
+SWAP-IN PREP (2026-05-05 follow-up): a 1,927-row sample of the schema
+is available at `wrdsappssamp_all.ccmxpf_lnkhist` with simplified
+columns (lpermno, gvkey, linkdt, linkenddt). Production version adds:
+  - linktype: LC/LU/LX/NU/etc. — link quality flag
+  - linkprim: P/C/J/N — primary marker
+  - usedflag: -1/+1 — used in CCM merged file
+  - liid: Compustat IID for link
+
+Production swap-in MUST filter `linktype IN ('LC','LU') AND linkprim
+IN ('P','C')` for academic-grade linkage. The function
+`build_ccmxpf_link()` below implements that filter and is ready to be
+called once the real table USAGE is unblocked.
 """
 
 from __future__ import annotations
@@ -100,8 +113,108 @@ def link_summary(link: pd.DataFrame, universe: pd.DataFrame | None = None) -> di
     return out
 
 
+def build_ccmxpf_link(
+    schema_table: str = "crsp_a_ccm.ccmxpf_lnkhist",
+    gvkeys: list[str] | None = None,
+    apply_quality_filter: bool = True,
+) -> pd.DataFrame:
+    """Production CCM link via real ccmxpf_lnkhist (when USAGE unblocked).
+
+    Args:
+        schema_table: 'crsp_a_ccm.ccmxpf_lnkhist' (legacy) or 'crsp_m_ccm.ccmxpf_lnkhist'
+            (monthly) or 'crsp_q_ccm.ccmxpf_lnkhist' (quarterly).
+            Sample: 'wrdsappssamp_all.ccmxpf_lnkhist' (1,927 rows, schema-only).
+        gvkeys: optional whitelist.
+        apply_quality_filter: if True (default), filter to academic-grade
+            primary links: linktype ∈ {LC, LU} ∧ linkprim ∈ {P, C}.
+            Disable only for schema testing on the sample table.
+
+    Returns DataFrame with columns: lpermno, gvkey, liid, linkdt, linkenddt,
+    linktype, linkprim. Sample table has only the first 4 columns; quality
+    filter cannot be applied there.
+    """
+    select_cols = "lpermno, gvkey, linkdt, linkenddt"
+    if apply_quality_filter:
+        select_cols += ", liid, linktype, linkprim, usedflag"
+
+    sql = f"SELECT {select_cols} FROM {schema_table}"
+    where_clauses = []
+    if gvkeys:
+        quoted = ",".join(f"'{g}'" for g in gvkeys)
+        where_clauses.append(f"gvkey IN ({quoted})")
+    if apply_quality_filter:
+        where_clauses.append("linktype IN ('LC','LU')")
+        where_clauses.append("linkprim IN ('P','C')")
+    if where_clauses:
+        sql += " WHERE " + " AND ".join(where_clauses)
+    df = query(sql)
+    if "lpermno" in df.columns:
+        df = df.rename(columns={"lpermno": "permno"})
+    return df
+
+
+def link_to_event_aware(
+    link_df: pd.DataFrame,
+    event_date: pd.Timestamp,
+    gvkey_col: str = "gvkey",
+    permno_col: str = "permno",
+    linkdt_col: str = "linkdt",
+    linkenddt_col: str = "linkenddt",
+) -> pd.DataFrame:
+    """Filter a time-varying link table to rows valid AT event_date.
+
+    A row is valid at event_date iff linkdt ≤ event_date AND
+    (linkenddt IS NULL OR linkenddt > event_date).
+
+    Returns DataFrame with one row per (gvkey, permno) pair active at
+    event_date. If multiple permnos map to the same gvkey at the event
+    (e.g., share-class restructure), all are returned — caller handles
+    deduplication if needed.
+
+    Use this with `build_ccmxpf_link()` for proper time-varying linkage:
+
+        full_link = build_ccmxpf_link(gvkeys=universe_gvkeys)  # historical
+        for evt in event_dates:
+            evt_link = link_to_event_aware(full_link, evt)
+            # ... use evt_link.permno for CRSP queries at this event date
+    """
+    if link_df.empty:
+        return link_df
+    df = link_df.copy()
+    if linkdt_col not in df.columns or linkenddt_col not in df.columns:
+        raise ValueError(
+            f"link table must have {linkdt_col} and {linkenddt_col} columns. "
+            f"Schema-only sample without these cannot be used for event-aware filtering."
+        )
+    valid = (df[linkdt_col] <= event_date) & (
+        df[linkenddt_col].isna() | (df[linkenddt_col] > event_date)
+    )
+    return df[valid].reset_index(drop=True)
+
+
+def smoke_test_sample() -> dict:
+    """Pull the 1,927-row sample to verify schema. Safe to call anytime.
+
+    Returns dict with row count, distinct permnos/gvkeys, columns observed.
+    """
+    df = query("SELECT * FROM wrdsappssamp_all.ccmxpf_lnkhist LIMIT 5000")
+    return {
+        "n_rows": int(len(df)),
+        "columns": list(df.columns),
+        "n_unique_lpermno": int(df["lpermno"].nunique()) if "lpermno" in df.columns else 0,
+        "n_unique_gvkey": int(df["gvkey"].nunique()) if "gvkey" in df.columns else 0,
+        "linkdt_min": str(df["linkdt"].min()) if "linkdt" in df.columns else "",
+        "linkdt_max": str(df["linkdt"].max()) if "linkdt" in df.columns else "",
+        "n_active_links": int(df["linkenddt"].isna().sum()) if "linkenddt" in df.columns else 0,
+        "note": "Sample-only schema lacks linktype/linkprim/usedflag/liid → cannot apply quality filter.",
+    }
+
+
 __all__ = [
+    "build_ccmxpf_link",
     "build_cusip8_link",
     "cache_link",
     "link_summary",
+    "link_to_event_aware",
+    "smoke_test_sample",
 ]
