@@ -30,6 +30,7 @@ notebooks/*-checkpoint.ipynb
 RESUMABLE.md
 ABANDONED.md
 FROZEN_TWO_LAYER.md
-LAYER_A_LOCKED.md
+# LAYER_A_LOCKED.md — committed at close 2026-05-05 as canonical status marker (Phase 4)
 .claude/scheduled_tasks.lock
 .claude/scheduled_tasks.json
+.cron/forward_monitor.log

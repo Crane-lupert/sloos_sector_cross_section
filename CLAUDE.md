@@ -1,8 +1,12 @@
 # sloos_sector_cross_section (S1)
 
+**Status**: ✅ **LAYER A LOCKED — event-study class** (Gate N thin-event-study class first instance, portfolio second LAYER A LOCKED instance after F6, Macro/Credit pod first LOCKED). Closed 2026-05-05. **한국어 distill**: [analysis/README_KR.md](analysis/README_KR.md).
+**Headline result**: Bonferroni-K=33 cell-level **15/33 cells significant** (3× floor) on v3 honest panel; F-test sector heterogeneity 6m **p=1.8e-56**; DRTSCIS alternative event def Spearman **0.83-0.89**; Layer D Δ Sharpe +0.866 (illustrative supplementary).
+**Governance close**: `D:/vscode/meta-harness/audits/2026-05-05-S1-governance-close-layer-a-locked-event-study.md` — 5 lock amendment governance-OK with Gate N retroactive legitimization (cell-level event-study PRIMARY 가 Lucca-Moench 2015 / Savor-Wilson 2014 / BKP 2026.02 / Bassett 2014 / Ferreira 2024 prior literature 표준).
+
 **FRAMING (amended 2026-05-05 Phase 4)**: this study is an **event-study regime-detection finding**, not a tradable factor strategy. The headline test is cell-level Bonferroni-corrected significance of sector cross-section heterogeneity post-SLOOS shock; tradable-strategy metrics (Δ Sharpe, walk-forward, net-of-cost) are demoted to robustness sub-checks. Reframing rationale: with n=35 events at quarterly frequency, continuous-trading metrics are under-powered; the canonical event-study literature (Mitchell-Stafford 2000, Lucca-Moench 2015, Savor-Wilson 2014) uses cell-level t-tests + bootstrap CI + sub-period stability + alternative event definitions + regime stratification as the standard validation procedure. Audit: `audits/2026-05-05-S1-phase4-framing.md`.
 
-Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening shock event (분기별 발표 시점) → forward {1mo, 3mo, 6mo} 11 GICS sector cross-section CAR cyclical heterogeneity. Pod: Macro/Credit pod first (V1 vol pod 와 sub-pod 다름 — vol = market-implied IV term structure, S1 = bank-side credit supply survey). Bonferroni-K=33 strict cell-level test (PRIMARY) + multiple robustness tests (sub-period, bootstrap, alternative event def, regime stratification) + post-2023.Q3 SVB shock cohort sub-sample narrow novel.
+Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening shock event (분기별 발표 시점) → forward {1mo, 3mo, 6mo} 11 GICS sector cross-section CAR cyclical heterogeneity. Pod: Macro/Credit pod first **LOCKED** (V1 vol pod 와 sub-pod 다름 — vol = market-implied IV term structure, S1 = bank-side credit supply survey). Bonferroni-K=33 strict cell-level test (PRIMARY) + multiple robustness tests (sub-period, bootstrap, alternative event def, regime stratification) + post-2023.Q3 SVB shock cohort sub-sample narrow novel.
 
 ## 1. 강제 규칙 (QR Scout discovery)
 

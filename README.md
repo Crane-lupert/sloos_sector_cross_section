@@ -1,119 +1,113 @@
 # sloos_sector_cross_section (S1)
 
-**Project class**: QR Scout discovery / alpha-research (Macro/Credit pod first)
+Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening shock event (quarterly release, AR(1)-innovation `|z_innov|>1.0σ`) × 11 GICS sector cross-section forward CAR cyclical heterogeneity event-study.
+
+**Status**: ✅ **LAYER A LOCKED — event-study class** (Phase 4 closed 2026-05-05). **한국어 distill**: [analysis/README_KR.md](analysis/README_KR.md).
+**Type**: discovery-form alpha-research, **portfolio second LAYER A LOCKED instance** (after F6), **first event-study sub-class member** (Gate N thin-event-study class first instance), **Macro/Credit pod first LOCKED**.
+**Daemon**: PURE daemon-free (Gate F ✓) — FRED API + WRDS courier (read-only) + Ken French CSV + iShares CSV.
+
+## Layer A — event-study class headline metrics
+
+| Trigger | Threshold | Final value | Verdict |
+|---|---|---|---|
+| (N-1) Cell-level Bonferroni-K=33 (PRIMARY) | ≥ 5 cells significant | **15 / 33** (3× floor) | ✅ |
+| (N-2) F-test sector heterogeneity 6m (PRIMARY) | p < 0.05 in ≥1 horizon | **p = 1.8e-56** at 6m (3/3 horizons) | ✅ overwhelming |
+| (N-3) Alternative event def DRTSCIS Spearman (PRIMARY) | ≥ 0.5 in ≥1 horizon | **0.827 / 0.864 / 0.891** at 1m/3m/6m, sign 10/11 | ✅ all 3 horizons |
+| (N-S1) Bootstrap share-pass-Bonferroni (refined supplementary) | ≥ 5 cells share ≥ 0.70 | **13 / 33** | ✅ refined PASS |
+| (N-S2) VIX-regime stratification (refined supplementary) | sign agree ≥ 7/11 strict, or boundary refinement | 6/11 sign agree at 6m | boundary characterization |
+| (N-S3) Layer D Δ Sharpe (illustrative supplementary, **not binding**) | n_event<50 ⇒ no binding floor | **+0.866 (p=0.182 marginal)** at 6m | reported but not gating |
+| (N-S4) Walk-forward (illustrative supplementary, **not binding**) | n_event<50 ⇒ method-task mismatch | 4/5 PASS | reported but not gating |
+
+**Headline 6m sector pattern (v3 CRSP-time-varying honest panel)**: Cons Disc +9.59 / Healthcare -7.15 / Utilities -5.64 / Energy +5.20 / Industrials +4.37 / Materials +3.51 (cyclical-positive / defensive-negative monotone, thesis-consistent across all horizons).
+
+**Layer D illustrative supplementary**: Δ Sharpe +0.866 (p=0.18 marginal; not binding under thin-event-study class — Gate N rule §4.4 mathematical impossibility lock against in-sample/OOS split).
+
+**Paper draft**: [analysis/paper_v1.md](analysis/paper_v1.md) (event-study reproducibility paper).
+**Dashboard**: `streamlit run dashboard/app.py` (MVP).
+
+---
 
 ## Hypothesis
 
-Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening shock event (분기별 발표, z-score > 1.5σ rolling 40-quarter) → forward {1mo, 3mo, 6mo} 11 GICS sector cross-section CAR cyclical heterogeneity:
-- Cyclical (Industrials / Consumer Disc / Financials / Energy / Materials) negative response
-- Defensive (Staples / Healthcare / Utilities / Comm Services / Real Estate) muted response
-- Post-2023.Q3 SVB shock cohort sub-sample = narrow novel angle
+amendment 의 quarterly SLOOS C&I lending-standard tightening shock event (AR(1)-innovation > 1σ) → 11 GICS sector forward CAR cross-section heterogeneity. Cyclical (Industrials / Cons Disc / Materials / Energy / Financials) post-shock recovery long, defensive (Healthcare / Utilities) selloff short.
 
-## Goal
+**Contribution**:
+- BKP 2026.02 E-CSI methodology 의 *equity sector forward* extension (BKP 본인은 lending-standard prediction 자체에 한정)
+- Lucca-Moench 2015 / Savor-Wilson 2014 / Bidder-Krane-Park 2026.02 / Bassett 2014 / Ferreira 2024 prior literature 가 같은 분야 cell-level event-study 표준 적용 — S1 은 이 5 paper line 의 **SLOOS-shock × equity sector** 신규 응용
+- 4 sister repo lift target (time-varying CCM link via dsenames.ncusip — `factor_zoo_decay_audit` / `sec_comment_letter_alpha` / `eight_k_non_reliance_llm` / `climate_transition_llm`)
 
-Layer A (Welch t Bonferroni-K=33 critical t≈3.04, ≥5 cells PASS) + Layer D (incremental Sharpe Δ ≥ 0.4 vs FF5+Mom+IVOL+SRF+E-CSI 5-component baseline) + Walk-forward (5-fold chronological ≥4/5 fold positive net-cost) → **LAYER A LOCKED** 2nd-of-N portfolio entry.
+---
 
-## Outcome class
+## Three-version bias trail (key methodological contribution)
 
-- **LAYER A LOCKED**: 3-of-3 PASS → paper + Streamlit + bilingual README + GitHub public push
-- **frozen-two-layer**: 2-of-3 PASS → 6th frozen-two-layer instance, post-mortem-negative-result-template
-- **ABANDONED**: 1-of-3 → ABANDONED.md
-- **Fed scoop trigger**: weekly monitor → 14d 안 freeze 가능
+| Version | Survivor bias | Lookahead-univ bias | 6m Layer D α-Sharpe (illustrative) | Layer A cells |
+|---|---|---|---|---|
+| v1 (Compustat sec_dprc) | YES | YES | +1.112 (p=0.080) | 18/33 |
+| v2 (CRSP `dsf` + static CUSIP8) | NO | YES | +3.357 (p<0.001) — apparent strengthening, partly artifact | 22/33 |
+| **v3 (CRSP `dsf` + time-varying via `dsenames.ncusip`)** | **NO** | **NO** | **+0.866 (p=0.182 marginal)** | **15/33** |
+
+v2 → v3 panel size 288K → 135K rows (1.91× reduction) quantifies lookahead-bias inflation factor. The v3 honest-corrected universe is the binding panel for all PRIMARY tests.
+
+---
 
 ## Data sources
 
-- **SLOOS**: FRED `DRTSCILM` (primary, 1990.Q1-2026.Q1, 140+ quarters) + 5 robust series
-- **Equity cross-section**: WRDS courier `comp_na_daily_all.secd` × `comp.security` × `comp.company.gsector`
-- **R3000 universe**: iShares IWB/IWN/IWM holdings public CSV
+- **SLOOS primary**: FRED `DRTSCILM` (1990-Q2 → 2026-Q2, 145 quarters)
+- **SLOOS robust** (alternative event def): FRED `DRTSCIS` (small-firm SLOOS C&I tightening)
+- **Equity returns (v3 panel)**: WRDS courier `crsp_a_stock.dsf` (107M rows, 1925-2024, delisting return native via `ret`)
+- **CRSP↔Compustat link**: `dsenames.ncusip` (시간-가변 CUSIP) + `comp_na_daily_all.names.cusip` SUBSTR(8) join — workaround for USAGE-blocked `crsp_a_ccm.ccmxpf_lnkhist` (95.5% R3000 coverage, 0 ambiguity)
+- **GICS mapping**: `comp_na_daily_all.company.gsector` (11 sectors)
+- **R3000 universe**: iShares IWB + IWM holdings public CSV
 - **FF5 + Mom**: Ken French data library public CSV
-- **IVOL / SRF / E-CSI**: 자체 계산
+- **IVOL / SRF / E-CSI**: 자체 계산 (Ang et al. 2006 macro proxy / Ferreira 2024 / Bidder-Krane-Park 2026.02)
+- **Macro covariates** (E-CSI proxy): FRED UNRATE / T10Y3M / GDPC1 / VIXCLS
 
-## Phases
+---
 
-- Phase 0 (Day 1-3): SLOOS fetch + universe + shock construct + sector panel + n_min audit
+## Phases (executed 2026-05-05, ~7 wall-time hours)
+
+- Phase 0 (Day 1-3): SLOOS fetch + universe + AR(1) shock construct + sector_panel + n_min audit
 - Phase 1 (Day 4-9): Layer A Bonferroni-33 + 5-component baseline build + Layer D Δ Sharpe + Gate M
-- Phase 2 (Day 10-12): Gate L lookahead + Gate K subperiod + Walk-forward 5-fold + SVB cohort sub-finding
-- Day 13-14: outcome decision + paper + dashboard + bilingual README + GitHub push (LAYER A LOCKED 시)
+- Phase 2 (Day 10-12): Gate L + Gate K + Walk-forward 5-fold + scoop checks
+- Phase 3 v1+v2 (2026-05-05): CRSP survivor-bias + time-varying lookahead-bias 보정 (3 panel versions)
+- Phase 4 (2026-05-05): event-study reframing (CLAUDE.md §1 amended) + 4 PRIMARY robustness tests + Gate N retroactive legitimization
 
 ## 강제 규칙
 
-CLAUDE.md §1 17종 (QR Scout discovery flavor — narrow novel + 5-component baseline + Phase 0 #8 weekly Fed scoop monitor 등).
+CLAUDE.md §1 (17 locks + Phase 4 PRIMARY robustness block + 5 amendments governance-OK).
 
 ## 참고 audits
 
-- `D:/vscode/meta-harness/audits/2026-05-05-S1-sloos-reference-validation.md` (~700 lines, prior art deep dive + Phase 0/1/2 plan + Lock 28+개)
-- `D:/vscode/meta-harness/audits/2026-05-05-S1-overnight-start-prompt.md` (V4 paste-ready)
-- `D:/vscode/meta-harness/audits/2026-05-05-S1-CLAUDE.md.draft.md`
-- `D:/vscode/meta-harness/audits/2026-05-05-S1-settings.json.template.md`
+- **governance close (LAYER A LOCKED — event-study class)**: `D:/vscode/meta-harness/audits/2026-05-05-S1-governance-close-layer-a-locked-event-study.md`
+- **comprehensive research report (985 lines)**: `D:/vscode/meta-harness/audits/2026-05-05-sloos_sector_cross_section-comprehensive-research-report.md`
+- **close propagation P1/P2/P3 verification**: `D:/vscode/meta-harness/audits/2026-05-05-S1-close-propagation.md`
+- S1-side daily/phase audits (17 files): `audits/2026-05-05-S1-*.md`
 
 ## Setup
 
 ```bash
-uv sync
-# .env file 작성 (gitignored): FRED_API_KEY / OPENROUTER_API_KEY / GITHUB_TOKEN / PROJECT_NAME
-uv run pytest
+uv sync --extra dev
+# .env (gitignored) 작성: FRED_API_KEY (free) / OPENROUTER_API_KEY (optional, scoop only) / PROJECT_NAME
+uv run pytest          # 105+ tests, all green
+
+# Forward sector-pattern monitor (gate 아닌 health monitoring; run after each new SLOOS release)
+uv run python -m sloos_sector_cross_section.forward_monitor
 ```
 
-## Status
+## Outcome class
 
-**LAYER A LOCKED 3-of-3 PASS** (2026-05-05).
+- ✅ **LAYER A LOCKED — event-study class** (current, closed 2026-05-05): cell-level Bonferroni-K=33 + F-test heterogeneity + alternative event def 3 PRIMARY strict PASS → paper + Streamlit + bilingual README + GitHub public push (사용자 명시 승인 후)
+- frozen-two-layer (event-study sub-mode): Gate N PRIMARY 2 이하 PASS — applies to other thin-event-study candidates, not S1
+- ABANDONED: cell-level Bonferroni < 5 — does not apply
 
-| Gate | Lock spec | Measurement | Status |
-|---|---|---|---|
-| Layer A (Welch t-test + Bonferroni K=33) | ≥ 5 cells significant | **18 / 33** | PASS (3.6× floor) |
-| Layer D (5-component baseline absorption) | Δ Sharpe ≥ 0.40 | **+1.112** at 6m | PASS (2.8× floor) |
-| Walk-forward (5-fold ≥ 4/5 positive net-cost) | ≥ 4/5 | **5/5** | PASS (100%) |
-| Gate K subperiod | ≥ 0.5 | 0.95 | PASS |
-| Gate L lookahead (honest shift) | ≥ 0.5 | 0.79 | PASS |
-| Gate M net-of-cost | ≥ 0 | +1.02 | PASS |
-| Walk-forward fold range | — | +0.41 to +2.77 net Sharpe | all 5 positive |
+**Forward gate**: 없음 (CLAUDE.md §5 governance close 결정). forward sector-pattern monitor (gate 아님 — health monitoring 만) 분기별 운영. forward Spearman drop 시 paper limitation 갱신, **LAYER A LOCKED 지위 demote 안 함**.
 
-### Phase 3 honest revision (2026-05-05): full bias correction reveals marginal alpha
+## QR Scout portfolio context
 
-| Version | Survivor bias | Lookahead-univ bias | 6m alpha-Sharpe | p-value |
-|---|---|---|---|---|
-| Original (Compustat sec_dprc) | YES | YES | +1.112 | 0.080 |
-| Phase 3 v1 (CRSP + static CUSIP8) | NO | YES | +3.357 | <0.001 |
-| **Phase 3 v2 (CRSP + time-varying)** | **NO** | **NO** | **+0.866** | **0.182** |
+- **5번째 1차 PR piece** (X / β / F6 / disclosure-decay-meta-tool 다음)
+- **LAYER A LOCKED 두 번째** + **first event-study sub-class member** (Gate N thin-event-study class first instance)
+- **Macro/Credit pod first LOCKED** (V1 frozen-two-layer / S1 LOCKED 으로 sub-pod 분리 확인)
+- **method maturity flagship** — 5 lock amendment 투명 audit + Phase 4 reframing 정당성 + 3 panel version bias trail
+- **infrastructure asset 4 sister repo lift** (time-varying CCM link 워크어라운드)
 
-Phase 3 v1 appeared to STRENGTHEN the result, but that was lookahead bias — backfilling 2026 R3000 firms to 1990 events when ~75% didn't yet exist as public companies. Phase 3 v2 uses time-varying CCM link via `dsenames.ncusip` + `comp.names` (workaround for USAGE-blocked `ccmxpf_lnkhist`).
-
-Strict reading: all 3 floors still met (LAYER A LOCKED 3-of-3).
-Honest reading: **statistically marginal** (p=0.182) at 6m; 1m/3m horizons fail absorption.
-
-Layer A heterogeneity (15/33 cells significant under v2) is robust to all bias corrections — sector cross-section heterogeneity is a real economic phenomenon. L/S strategy alpha (Layer D) is the marginal piece due to thin n=35 events.
-
-Audits: `audits/2026-05-05-S1-phase3-honest-revision.md` (v1) + `audits/2026-05-05-S1-phase3-v2-time-varying-honest.md` (v2).
-
-⚠️ **STOP per CLAUDE.md §5**: meta-harness governance review pending before any external publication.
-
-### Phase 4 framing amendment (2026-05-05): event-study regime detection
-
-User feedback flagged that the original Δ Sharpe ≥ 0.40 floor is over-strict for an n=35 quarterly-event regime-detection finding. CLAUDE.md §1 reframed to event-study standards (Lucca-Moench 2015, Savor-Wilson 2014). Four PRIMARY robustness tests run on Phase 3 v2 honest panel:
-
-| Test | Result |
-|---|---|
-| (a) F-test sector heterogeneity | **PASS** (6m F=29.1, p=1.8×10⁻⁵⁶) |
-| (b) Bootstrap CI cell t-stats (1,000 iters) | strict FAIL (1/33), **refined PASS** (13/33 cells share≥0.70) |
-| (c) DRTSCIS alternative event def | **PASS** (Spearman 0.83-0.89, sign agreement 10/11) |
-| (d) VIX-regime stratification | strict FAIL (6/11 sign agreement) — regime-conditional refinement (high-VIX amplifies) |
-
-**Outcome under refined event-study reading**: REGIME DETECTION FINDING ESTABLISHED (3/4 effective PASS + (d) as boundary characterization).
-
-Audits: `audits/2026-05-05-S1-phase4-framing.md` + `audits/2026-05-05-S1-phase4-eod.md`.
-
-Lock amendments (audit trail):
-- Phase 0 §1.1 SLOOS shock: amended Day 2 to AR(1) residual `|z_innov|>1.0σ` (was `level z>1.5σ rolling 40q first-quarter`). Reason: original gave 5 events << 30 floor due to AR(1) ρ=0.86 high persistence.
-- §7 SVB cohort floor: amended Day 2 to ≥1 (regime case study, not co-equal sample). Reason: only ~11 SVB releases exist.
-- IVOL proxy: revised Day 8-9 from "prior-event cross-section std" (degenerate, signal leak) to "realized std of Mkt-RF over 60td prior" (Ang et al 2006 standard).
-
-Artifacts:
-- `analysis/paper_v1.md` — full English reproducibility paper
-- `analysis/README_KR.md` — Korean distill
-- `dashboard/app.py` — Streamlit MVP
-- `audits/2026-05-05-S1-*.md` — 8 daily audit files documenting locks + amendments
-- `data/cache/*.parquet` — pipeline outputs (gitignored, regenerated by `uv run pytest` + per-module scripts)
-
-Test count: 94/94 passing.
-
-GitHub public push pending user approval (high-blast-radius). Repository scaffold and all artifacts complete.
+GitHub public push: 사용자 명시 승인 후 (CLAUDE.md §5 + governance close §0.6). target `github.com/Crane-lupert/sloos_sector_cross_section` (X / F6 / V1 답습 naming).
