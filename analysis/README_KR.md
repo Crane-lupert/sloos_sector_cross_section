@@ -74,6 +74,20 @@ Fed SLOOS C&I 대출기준 긴축 충격 (분기별 발표) → forward {1mo, 3m
 - **Gate M net-of-cost**: 5bp/yr cost 차감 후 net Sharpe +1.02.
 - **Walk-forward 5-fold**: 5/5 fold positive net Sharpe (range +0.41 to +2.77). Short basket [Healthcare, IT] 모든 fold 일관 (fold 2-5).
 
+## Sign-conditional L/S 변형 (paper §10)
+
+Sign-asymmetry 직접 활용: 각 shock event 의 sign 에 맞춘 baskets 사용.
+
+| Strategy | Raw Sharpe | Alpha-Sharpe | α p |
+|---|---|---|---|
+| Unsigned L/S (기준) | +1.027 | +1.112 | 0.080 |
+| **Sign-conditional L/S** | **+1.250** | **+2.078** | **0.0021** |
+
+Sign-conditional 이 +87% alpha-Sharpe 개선. p<0.005 로 강한 유의. Operational 권장.
+
+- TIGHTEN events: long [Materials, Industrials, Cons Disc, Cons Staples, Utilities], short [Healthcare]
+- EASE events: long [Energy, Industrials, Cons Staples, Financials], short [Healthcare]
+
 ## 한계 및 follow-up
 
 1. Survivor bias: 2026 현재 listed 종목 backfill. 실거래 Sharpe 는 더 낮음.
