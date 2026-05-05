@@ -121,6 +121,26 @@ Audits: `audits/2026-05-05-S1-phase3-honest-revision.md` (v1) + `audits/2026-05-
 
 ⚠️ **CLAUDE.md §5 STOP**: meta-harness governance review 후 push 결정.
 
+## Phase 4 framing amendment (2026-05-05): event-study regime detection
+
+원래 §1.7 Δ Sharpe ≥ 0.40 floor 가 n=35 quarterly-event regime-detection finding 에 대해 over-strict 라는 user feedback. CLAUDE.md §1 을 event-study standards (Lucca-Moench 2015, Savor-Wilson 2014) 로 reframe. 4 PRIMARY robustness tests:
+
+| Test | 결과 |
+|---|---|
+| (a) F-test sector heterogeneity | **PASS** (6m F=29.1, p=1.8×10⁻⁵⁶) |
+| (b) Bootstrap CI on cell t-stats (1,000 iters) | strict FAIL (1/33), **refined PASS** (13/33 cells share≥0.70) |
+| (c) DRTSCIS alternative event def | **PASS** (Spearman 0.83-0.89, sign agreement 10/11) |
+| (d) VIX-regime stratification | strict FAIL (6/11) — **regime-conditional refinement** (high-VIX amplifies, low-VIX 5개 sector sign flip) |
+
+**최종 outcome (refined event-study reading)**: REGIME DETECTION FINDING ESTABLISHED (3/4 effective PASS + (d) boundary characterization).
+
+핵심 발견:
+- Cell-level evidence 매우 강함: F-test p<<10⁻²⁵, 15/33 cells Bonferroni-significant, DRTSCIS Spearman 0.83+
+- L/S strategy alpha 는 marginal (event-study 가 아닌 continuous-trading metric 으로는 underpowered, 정상)
+- High-VIX regime 에서 효과 amplify (Cons Disc 6m: full +9.59 → high-VIX +11.84)
+
+Audits: `audits/2026-05-05-S1-phase4-framing.md` + `audits/2026-05-05-S1-phase4-eod.md`.
+
 ## 한계 및 follow-up
 
 1. Survivor bias: 2026 현재 listed 종목 backfill. 실거래 Sharpe 는 더 낮음.

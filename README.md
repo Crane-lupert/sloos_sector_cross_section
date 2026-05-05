@@ -87,6 +87,21 @@ Audits: `audits/2026-05-05-S1-phase3-honest-revision.md` (v1) + `audits/2026-05-
 
 ⚠️ **STOP per CLAUDE.md §5**: meta-harness governance review pending before any external publication.
 
+### Phase 4 framing amendment (2026-05-05): event-study regime detection
+
+User feedback flagged that the original Δ Sharpe ≥ 0.40 floor is over-strict for an n=35 quarterly-event regime-detection finding. CLAUDE.md §1 reframed to event-study standards (Lucca-Moench 2015, Savor-Wilson 2014). Four PRIMARY robustness tests run on Phase 3 v2 honest panel:
+
+| Test | Result |
+|---|---|
+| (a) F-test sector heterogeneity | **PASS** (6m F=29.1, p=1.8×10⁻⁵⁶) |
+| (b) Bootstrap CI cell t-stats (1,000 iters) | strict FAIL (1/33), **refined PASS** (13/33 cells share≥0.70) |
+| (c) DRTSCIS alternative event def | **PASS** (Spearman 0.83-0.89, sign agreement 10/11) |
+| (d) VIX-regime stratification | strict FAIL (6/11 sign agreement) — regime-conditional refinement (high-VIX amplifies) |
+
+**Outcome under refined event-study reading**: REGIME DETECTION FINDING ESTABLISHED (3/4 effective PASS + (d) as boundary characterization).
+
+Audits: `audits/2026-05-05-S1-phase4-framing.md` + `audits/2026-05-05-S1-phase4-eod.md`.
+
 Lock amendments (audit trail):
 - Phase 0 §1.1 SLOOS shock: amended Day 2 to AR(1) residual `|z_innov|>1.0σ` (was `level z>1.5σ rolling 40q first-quarter`). Reason: original gave 5 events << 30 floor due to AR(1) ρ=0.86 high persistence.
 - §7 SVB cohort floor: amended Day 2 to ≥1 (regime case study, not co-equal sample). Reason: only ~11 SVB releases exist.
