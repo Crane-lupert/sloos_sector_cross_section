@@ -56,14 +56,16 @@ Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening s
 | 11 | walk_forward.py 5-fold + scoop re-check #2 | Phase 2 #3 |
 | 12 | Phase 1+2 mid-checkpoint + SVB cohort sub-finding 분석 | P2 |
 | 13 | outcome decision (LAYER A LOCKED / frozen-two-layer / ABANDONED) | P2 |
-| 14 | paper_v1 + dashboard + bilingual README + GitHub push (LAYER A LOCKED 시) + scoop #3 | hard cap |
+| 14 | paper_v1 draft + dashboard + bilingual README + status file (LAYER_A_LOCKED.md / FROZEN_TWO_LAYER.md / ABANDONED.md) + scoop #3 → **STOP, no gh push from S1** (governance review at meta-harness) | hard cap |
 
 ## 5. Outcome class (QR Scout discovery)
 
-- **LAYER A LOCKED**: Layer A + Layer D + Walk-forward 3-of-3 PASS → paper + Streamlit + bilingual README + GitHub public push
-- **frozen-two-layer**: Layer A PASS + Layer D FAIL → 6th frozen-two-layer instance, post-mortem-negative-result-template, reports/postmortems/. SVB cohort sub-finding standalone publishable
-- **ABANDONED**: Layer A FAIL → ABANDONED.md
-- **Fed scoop trigger**: weekly monitor → 14d 안 freeze 가능
+S1 안에서는 **status file + draft artifacts 까지만** 작성. **GitHub push 는 본 repo 안 직접 수행 X** — Day 14 후 사용자가 meta-harness 로 복귀, governance review 후 meta-harness 에서 gh push 결정/실행.
+
+- **LAYER A LOCKED**: Layer A + Layer D + Walk-forward 3-of-3 PASS → `LAYER_A_LOCKED.md` + paper_v1 draft + dashboard + bilingual README → **STOP** → 사용자 meta-harness 복귀 → governance review → meta-harness 에서 gh public push 실행
+- **frozen-two-layer**: Layer A PASS + Layer D FAIL → `FROZEN_TWO_LAYER.md` + post-mortem-negative-result-template draft (reports/postmortems/) → **STOP** → meta-harness review → push 결정. 6th frozen-two-layer instance. SVB cohort sub-finding standalone publishable
+- **ABANDONED**: Layer A FAIL → `ABANDONED.md` → STOP → meta-harness review
+- **Fed scoop trigger**: weekly monitor → 14d 안 freeze 가능 → STOP → meta-harness review
 
 ## 6. Bayesian prior + 6th frozen 회피
 
@@ -103,6 +105,8 @@ Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening s
 - Aggregate macro analysis (Bassett 2014 territory) — S1 = sector-decomposed 11 GICS strict
 - Inverse direction (cross-section returns → lending channel barometer, Ferreira 2024 territory) — S1 = forward direction (SLOOS → returns)
 - E-CSI lending standard prediction (Fed 2026.02 Bidder-Krane-Park) — S1 = equity sector forward CAR target
+- **GitHub public push 본 repo 안 직접 수행 금지** (2026-05-05 governance lock retro-fix) — Day 14 outcome 후 사용자 meta-harness 복귀, governance review 통과 후 meta-harness 에서 gh push 실행
+- **OpenRouter API key 본 repo `.env` 명시 금지** (2026-05-05 governance lock retro-fix) — portfolio-coordination 중앙 config 가 `shared_utils.openrouter_client` 통해 처리
 
 ## 10. 참고 audit
 

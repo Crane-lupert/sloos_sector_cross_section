@@ -83,6 +83,7 @@ def build_crsp_sector_panel(
     universe: pd.DataFrame,
     link: pd.DataFrame,
     horizons: dict[str, int] | None = None,
+    time_varying: bool = False,
 ) -> tuple[pd.DataFrame, CRSPPanelStats]:
     """Build forward CAR panel using CRSP returns.
 
@@ -91,10 +92,16 @@ def build_crsp_sector_panel(
     horizon_td, t0_date, t1_date, log_ret, market_log_ret, car, shock_sign,
     sector_name.
 
+    Args:
+        time_varying: if True, `link` is expected to have valid_from/valid_to
+            columns (from `crsp_link_timevarying`); the per-event permno
+            list is filtered to firms valid at each event date. If False
+            (default), `link` is treated as static (single (permno, gvkey)
+            mapping per firm, valid for all time).
+
     The benchmark `market_log_ret` is the cross-sectional equal-weighted
     mean log return per (event_date, horizon), same as v1 panel for
-    apples-to-apples comparison. (A cap-weighted variant is provided in
-    `build_crsp_sector_panel_capwt`.)
+    apples-to-apples comparison.
     """
     horizons = horizons or {"1m": 21, "3m": 63, "6m": 126}
     h_max = max(horizons.values())
@@ -103,11 +110,20 @@ def build_crsp_sector_panel(
     universe_clean["gsector"] = universe_clean["gsector"].astype(int)
     universe_clean["gvkey_str"] = universe_clean["gvkey"].astype(str)
 
-    link_clean = link[["permno", "gvkey"]].copy()
+    link_clean = link.copy()
     link_clean["gvkey_str"] = link_clean["gvkey"].astype(str)
     link_clean["permno"] = link_clean["permno"].astype(int)
 
-    merged = universe_clean.merge(link_clean[["permno", "gvkey_str"]], on="gvkey_str", how="inner")
+    if time_varying and "valid_from" in link_clean.columns:
+        # For time-varying mode: keep valid_from/valid_to columns for per-event filtering
+        merged = universe_clean.merge(
+            link_clean[["permno", "gvkey_str", "valid_from", "valid_to"]],
+            on="gvkey_str",
+            how="inner",
+        )
+    else:
+        merged = universe_clean.merge(link_clean[["permno", "gvkey_str"]], on="gvkey_str", how="inner")
+
     permno_to_sector: dict[int, int] = dict(zip(merged["permno"].astype(int), merged["gsector"].astype(int)))
     permno_to_gvkey: dict[int, str] = dict(zip(merged["permno"].astype(int), merged["gvkey_str"]))
     permnos = list(set(int(p) for p in merged["permno"].dropna()))
@@ -131,15 +147,34 @@ def build_crsp_sector_panel(
     rets = compute_daily_log_returns(dsf)
     rets = rets.sort_values(["permno", "date"]).reset_index(drop=True)
 
+    # For time-varying mode: build per-event permno→gvkey lookup (subset valid at event date)
+    if time_varying and "valid_from" in merged.columns:
+        per_event_link: dict[pd.Timestamp, dict[int, tuple[str, int]]] = {}
+        for evt in event_dates:
+            valid_at_evt = merged[(merged["valid_from"] <= evt) & (merged["valid_to"] > evt)]
+            per_event_link[evt] = {
+                int(p): (str(g), int(s))
+                for p, g, s in zip(valid_at_evt["permno"], valid_at_evt["gvkey_str"], valid_at_evt["gsector"])
+            }
+    else:
+        per_event_link = None
+
     rows: list[dict] = []
     for permno, g in rets.groupby("permno", sort=False):
-        sector = permno_to_sector.get(int(permno))
-        gvkey = permno_to_gvkey.get(int(permno))
-        if sector is None or gvkey is None:
-            continue
+        permno_int = int(permno)
         dates_arr = g["date"].to_numpy()
         log_rets = g["log_ret"].to_numpy()
         for evt in event_dates:
+            if per_event_link is not None:
+                evt_lookup = per_event_link.get(evt, {})
+                if permno_int not in evt_lookup:
+                    continue  # firm not linked at this event date (time-varying mode)
+                gvkey, sector = evt_lookup[permno_int]
+            else:
+                sector = permno_to_sector.get(permno_int)
+                gvkey = permno_to_gvkey.get(permno_int)
+                if sector is None or gvkey is None:
+                    continue
             evt_np = np.datetime64(evt.to_datetime64(), "ns")
             i0 = int(np.searchsorted(dates_arr, evt_np, side="left"))
             if i0 >= len(dates_arr):
@@ -156,7 +191,7 @@ def build_crsp_sector_panel(
                 rows.append(
                     {
                         "event_date": evt,
-                        "permno": int(permno),
+                        "permno": permno_int,
                         "gvkey": gvkey,
                         "sector": int(sector),
                         "horizon": h_label,

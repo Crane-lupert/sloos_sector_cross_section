@@ -12,7 +12,6 @@
       "Bash(uv*)",
       "Bash(pytest*)",
       "Bash(git*)",
-      "Bash(gh*)",
       "Bash(curl*)",
       "Bash(streamlit*)",
       "Bash(jupyter*)",
