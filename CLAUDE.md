@@ -122,6 +122,7 @@ Legacy Sharpe-based gates (§1.7 §1.9 §1.10 §1.12) are reported as supplement
 
 ## 10. 참고 audit
 
+- **Comprehensive research report (Phase 0-4 종합 + governance review용)**: `D:/vscode/meta-harness/audits/2026-05-05-sloos_sector_cross_section-comprehensive-research-report.md` (~985 lines, 19 sections + 4 appendices)
 - reference validation: `D:/vscode/meta-harness/audits/2026-05-05-S1-sloos-reference-validation.md` (~700 lines)
 - launch overnight prompt: `D:/vscode/meta-harness/audits/2026-05-05-S1-overnight-start-prompt.md`
 - settings.json template: `D:/vscode/meta-harness/audits/2026-05-05-S1-settings.json.template.md`
@@ -130,3 +131,4 @@ Legacy Sharpe-based gates (§1.7 §1.9 §1.10 §1.12) are reported as supplement
 - F6 escape mechanism: `D:/vscode/meta-harness/audits/2026-04-28-clinicaltrials-amendment-f6-layer-a-locked-reception.md`
 - Gate K/L/M (informed_flow inheritance): `D:/vscode/meta-harness/audits/2026-05-04-informed-flow-crypto-perp-retraction.md`
 - WRDS courier: `E:\wrds-data-courier\INTERFACE.md`
+- S1 daily/phase audits (17 files): `audits/2026-05-05-S1-*.md` — bootstrap, day1/2/3/5/7/9/10/11/14, phase0/3/3v2/4-framing/4-eod, sign-conditional, healthcare-outlier, courier-followup
