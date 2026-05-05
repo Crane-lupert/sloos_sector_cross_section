@@ -116,7 +116,7 @@ Phase 1 §1.7 lock 「Δ Sharpe ≥ 0.40」 을 strict 적용하면:
 1. 진짜 ccmxpf_lnkhist (USAGE 풀린 후) 로 비교 → linktype/linkprim quality filter 효과 측정
 2. Forward OOS test (다음 4-8 분기 SLOOS 발표) — 진짜 진짜 honest 결과
 3. n 늘리기: robust SLOOS series (DRTSCIS) PC 결합으로 events ≥50 가능?
-4. Sign-conditional time-varying re-test
+4. ~~Sign-conditional time-varying re-test~~ **DONE 2026-05-05**: alpha-Sharpe **+0.094 (p=0.88)** — sec.0.40 floor FAIL. 이전 +87% 개선은 lookahead bias artifact. Unsigned 6m 이 honest version 의 권장 strategy.
 5. Firm-level Ang et al IVOL 정식 구축
 
 ## 변경된 사항 (Phase 3 v2)

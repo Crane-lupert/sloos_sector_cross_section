@@ -108,6 +108,10 @@ Time-varying link 적용 시:
 
 → 제 원래 honest-research 경고 (true OOS Sharpe ~0.3-0.9) confirm.
 
+**Sign-conditional 재테스트 (Phase 3 v2)**: 이전 +87% 개선 (+2.078) 도 사라짐. CRSP-tv sign-conditional alpha-Sharpe **+0.094 (p=0.88)** — sec.0.40 floor 실패. 이전 sign-conditional 개선은 lookahead bias artifact 였음.
+
+**Phase 3 v2 honest 권고 strategy: unsigned 6m only.**
+
 Layer A (sector cross-section heterogeneity) 는 모든 bias 보정 후에도 **15/33 cells significant** → real economic phenomenon. L/S trading strategy alpha (Layer D) 만 thin sample 한계로 marginal.
 
 **Strict 판정**: LAYER A LOCKED 3-of-3 (모든 floor 통과)

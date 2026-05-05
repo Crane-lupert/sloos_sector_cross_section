@@ -169,16 +169,22 @@ We implement a sign-conditional version of the L/S strategy: at each shock event
 
 (Healthcare is short in both signs because its sign-stratified Bonferroni-pass is negative on both sides.)
 
-**Result**: covers all 36 events. Raw Sharpe annualized +1.250 (+22% vs unsigned +1.027). After full 5-component baseline absorption: **alpha-Sharpe +2.078, alpha p-value 0.0021** (87% improvement vs unsigned +1.112 with p=0.080). R² = 0.643.
+**Result on Compustat (original survivor-biased + lookahead-biased universe)**: covers all 36 events. Raw Sharpe +1.250, alpha-Sharpe **+2.078 (p=0.002)** — appeared to be a +87% improvement over unsigned +1.112.
 
-The sign-conditional variant is materially stronger because it exploits the asymmetry directly: easing-shock-driven Healthcare selloff (t=-10.88) is a much stronger short signal than the average across signs, and the long basket adjusts to the macro-cyclic regime indicated by each shock direction.
+⚠️ **Phase 3 v2 retest (time-varying CRSP universe, full bias correction)**: the sign-conditional improvement **vanishes**. Alpha-Sharpe drops to **+0.094 (p=0.883)** — clearly fails the 0.40 absorption floor.
 
-| Strategy | Events | Raw Sharpe | Alpha-Sharpe | α p-value |
-|---|---|---|---|---|
-| Unsigned L/S (paper §6) | 35 | +1.027 | +1.112 | 0.080 |
-| **Sign-conditional L/S** | **36** | **+1.250** | **+2.078** | **0.0021** |
+| Variant | Universe | Raw Sharpe | Alpha-Sharpe | α p-value | Pass §1.7 floor 0.40? |
+|---|---|---|---|---|---|
+| Unsigned (paper §6) | Compustat | +1.027 | +1.112 | 0.080 | YES (marginal) |
+| Sign-conditional | Compustat | +1.250 | +2.078 | 0.002 | YES |
+| Unsigned | CRSP static | +1.552 | +3.357 | <0.001 | YES |
+| Sign-conditional | CRSP static | +1.590 | +3.244 | <0.001 | YES |
+| **Unsigned (honest)** | **CRSP time-varying** | **+0.397** | **+0.866** | **0.182** | **YES (marginal)** |
+| **Sign-conditional (honest)** | **CRSP time-varying** | **+0.513** | **+0.094** | **0.883** | **NO** |
 
-→ The sign-conditional variant is the recommended operational strategy. The unsigned L/S serves as a robustness benchmark and matches the original lock construction.
+**Conclusion**: the apparent +87% sign-conditional improvement on Compustat was an artifact of compounded survivor + lookahead bias on the universe. Under proper bias correction (Phase 3 v2), the unsigned strategy is more robust than sign-conditional. The §9 sign-asymmetry observation (Healthcare 6m ease t=-10.88 vs tighten t=-6.19) is a real Layer A finding, but it does NOT translate to a tradable Layer D edge once the universe is properly time-varying.
+
+The unsigned 6m strategy remains the cleanest expression of the hypothesis. Sign-conditional should be considered a sample-specific finding, not a recommended operational strategy.
 
 ## 11. Limitations and follow-up
 
