@@ -20,7 +20,7 @@
 - 📋 Action item for user:
   1. Open `WRDS_BLOCKED_SCHEMAS.md` in courier repo
   2. Copy email draft
-  3. Send to `wrds-support@wharton.upenn.edu` from `danielkhur` account
+  3. Send to `wrds-support@wharton.upenn.edu` from the WRDS account (see local credentials)
   4. Reply to courier outbox with timestamp
 - ETA after dispatch: 1-2 weeks (1-3 business days response + 3-7 days grant)
 - Note: CUSIP8 95.4% sufficient for current Phase 3 honest revision; final swap only needed for paper publication if reviewers demand time-varying linkage rigor.
