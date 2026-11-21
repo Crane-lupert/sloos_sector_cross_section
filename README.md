@@ -1,5 +1,11 @@
 # sloos_sector_cross_section (S1)
 
+> **2026-11 — Superseded.** The sector-level results reported below (15 of 33 cells) do not survive corrected event dates (public
+> release dates of the survey), a point-in-time universe and one observation per survey event: 0 of 33 cells pass. The US analysis is
+> replaced by the v3 paper in [sloos_sector_external_validation](https://github.com/Crane-lupert/sloos_sector_external_validation)
+> (`analysis/paper_v3_en.md`), which tests a different hypothesis on the cross-section of bank stocks. This repository is kept as a
+> record of the earlier analysis.
+
 Fed Senior Loan Officer Opinion Survey (SLOOS) C&I lending standard tightening shock event (quarterly release, AR(1)-innovation `|z_innov|>1.0σ`) × 11 GICS sector cross-section forward CAR cyclical heterogeneity event-study.
 
 **Status**: ✅ **LAYER A LOCKED — event-study class** (Phase 4 closed 2026-05-05). **한국어 distill**: [analysis/README_KR.md](analysis/README_KR.md).

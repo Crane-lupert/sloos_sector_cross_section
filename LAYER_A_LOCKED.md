@@ -1,5 +1,11 @@
 # S1 sloos_sector_cross_section — LAYER A LOCKED — event-study class
 
+> **2026-11 — Superseded.** The sector-level results reported below (15 of 33 cells) do not survive corrected event dates (public
+> release dates of the survey), a point-in-time universe and one observation per survey event: 0 of 33 cells pass. The US analysis is
+> replaced by the v3 paper in [sloos_sector_external_validation](https://github.com/Crane-lupert/sloos_sector_external_validation)
+> (`analysis/paper_v3_en.md`), which tests a different hypothesis on the cross-section of bank stocks. This repository is kept as a
+> record of the earlier analysis.
+
 **Close date**: 2026-05-05
 **Wall time**: ~7 hours (vs 14d hard cap)
 **Last commit**: `38bb839` (Phase 4 unit tests + forward_monitor scaffold)
