@@ -1,6 +1,9 @@
 # sloos_sector_cross_section (S1)
 
-**Status**: ✅ **LAYER A LOCKED — event-study class** (Gate N thin-event-study class first instance, portfolio second LAYER A LOCKED instance after F6, Macro/Credit pod first LOCKED). Closed 2026-05-05. **한국어 distill**: [analysis/README_KR.md](analysis/README_KR.md).
+**Status (2026-11-21)**: ⚠️ **대체됨.** 아래의 판정 (LAYER A LOCKED, 15/33) 은 정정 절차 — 공표일 기준 사건일, 시점 기준 유니버스, 사건 단위 추론 — 에서 0/33 으로 유지되지 않았다. 미국 분석은 `D:/vscode/sloos_sector_external_validation` 의 v3 논문으로 대체됐다.
+**이 저장소의 규칙**: 기록으로 둔다. 새 분석·새 결과 파일을 여기에 추가하지 않는다. 아래 본문은 2026년 5월의 기록이며 현재 목표가 아니다.
+**본문의 인용 정정**: 본문에 나오는 "Bidder-Krane-Park 2026.02" 는 틀린 저자 표기다. 실제 문서는 Baylor, Keane, Morgan, Zlate 의 연준 FEDS Note 다 (`D:/vscode/meta-harness/data/known-hallucinated-anchors.md` B.19). 기록이라 본문은 고치지 않는다.
+**이전 Status (2026-05-05)**: LAYER A LOCKED — event-study class (Gate N thin-event-study class first instance). **한국어 distill**: [analysis/README_KR.md](analysis/README_KR.md). 근거: `D:/vscode/meta-harness/audits/2026-11-20-ssrn-preprints-full-reverification-and-src-correction-plan.md`, `D:/vscode/meta-harness/audits/2026-11-21-sloos-v3-repo-apply.md`.
 **Headline result**: Bonferroni-K=33 cell-level **15/33 cells significant** (3× floor) on v3 honest panel; F-test sector heterogeneity 6m **p=1.8e-56**; DRTSCIS alternative event def Spearman **0.83-0.89**; Layer D Δ Sharpe +0.866 (illustrative supplementary).
 **Governance close**: `D:/vscode/meta-harness/audits/2026-05-05-S1-governance-close-layer-a-locked-event-study.md` — 5 lock amendment governance-OK with Gate N retroactive legitimization (cell-level event-study PRIMARY 가 Lucca-Moench 2015 / Savor-Wilson 2014 / BKP 2026.02 / Bassett 2014 / Ferreira 2024 prior literature 표준).
 
